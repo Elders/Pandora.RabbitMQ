@@ -1,8 +1,7 @@
-﻿namespace Pandora.RabbitMQ.Bootstrap.Management.Model
+﻿namespace Pandora.RabbitMQ.Bootstrap.Management.Model;
+
+public class User
 {
-    public class User
-    {
-        public string Name { get; set; }
-        public string PasswordHash { get; set; }
-    }
+    public string Name { get; set; }
+    public string PasswordHash { get; set; }
 }
