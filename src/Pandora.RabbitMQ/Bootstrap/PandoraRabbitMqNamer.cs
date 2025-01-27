@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace Pandora.RabbitMQ.Bootstrap;

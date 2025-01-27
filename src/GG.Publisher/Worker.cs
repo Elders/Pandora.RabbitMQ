@@ -1,5 +1,5 @@
-using Elders.Pandora.PandoraConfigurationMessageProcessors;
 using Pandora.RabbitMQ.Bootstrap;
+using Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 using Pandora.RabbitMQ.Publisher;
 
 namespace GG.Publisher
@@ -20,10 +20,12 @@ namespace GG.Publisher
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _rabbitMqStartup.Start("giService");
+            _rabbitMqStartup.Start("topService");
 
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
             keyValuePairs.Add("key1", "value1");
-            _publisher.Publish(new ConfigurationMessage("giService", keyValuePairs));
+            _publisher.Publish(new ConfigurationMessage("tenant", "giService", keyValuePairs));
+            _publisher.Publish(new ConfigurationMessage("tenant", "topService", keyValuePairs));
 
             while (!stoppingToken.IsCancellationRequested)
             {

@@ -1,7 +1,7 @@
-﻿using Elders.Pandora.PandoraConfigurationMessageProcessors;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pandora.RabbitMQ.Bootstrap;
+using Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 using RabbitMQ.Client;
 
 namespace Pandora.RabbitMQ.Consumer;
