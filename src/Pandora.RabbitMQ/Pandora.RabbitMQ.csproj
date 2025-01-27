@@ -12,4 +12,26 @@
 		<PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
 	</ItemGroup>
 
+  <!--Nuget-->
+  <PropertyGroup>
+    <PackageId>Pandora.RabbitMQ</PackageId>
+
+    <Title>Pandora RabbitMQ</Title>
+    <PackageTags>pandora rabbitMQ</PackageTags>
+
+    <Copyright>Copyright © Elders OSS 2013-2024</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RequireLicenseAcceptance>true</RequireLicenseAcceptance>
+
+    <RepositoryUrl>https://github.com/Elders/Pandora.RabbitMQ.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Elders/Pandora.RabbitMQ</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <AssemblyName>Pandora.RabbitMQ</AssemblyName>
+    <RootNamespace>Pandora.RabbitMQ</RootNamespace>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+  </PropertyGroup>
+  
 </Project>
