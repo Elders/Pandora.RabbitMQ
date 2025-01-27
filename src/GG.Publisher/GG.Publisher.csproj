@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>dotnet-GG.Publisher-fa327433-bce9-4d38-9f0d-2efbfa57a921</UserSecretsId>
 	</PropertyGroup>
