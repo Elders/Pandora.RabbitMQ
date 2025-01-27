@@ -1,5 +1,5 @@
-﻿using Elders.Pandora.PandoraConfigurationMessageProcessors;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text.Json;
@@ -82,7 +82,7 @@ public sealed class AsyncConsumer : AsyncEventingBasicConsumer
 
         try
         {
-            await _pandoraConfigurationMessageProcessor.ProcessMessageAsync(message).ConfigureAwait(false);
+            await _pandoraConfigurationMessageProcessor.ProcessAsync(message).ConfigureAwait(false);
             // Do some work with the message
             _logger.LogInformation("Received message: {message}", message.ServiceKey);
         }
