@@ -1,6 +1,6 @@
 ---
 variables:
-  PROJECT_DIR: Elders.Cronus.SourceGeneration.AutoUpdater
+  PROJECT_DIR: Pandora.RabbitMQ
 
 trigger:
   branches:
