@@ -6,16 +6,16 @@ using RabbitMQ.Client;
 
 namespace Pandora.RabbitMQ.Consumer;
 
-public sealed class ConsumerFactory
+public sealed class PandoraRabbitMqConsumerFactory
 {
     private AsyncConsumer _consumer;
 
     private readonly IPandoraConfigurationMessageProcessor _pandoraConfigurationMessageProcessor;
     private readonly RabbitMqOptions options;
     private readonly ConsumerPerQueueChannelResolver _channelResolver;
-    private readonly ILogger<ConsumerFactory> _logger;
+    private readonly ILogger<PandoraRabbitMqConsumerFactory> _logger;
 
-    public ConsumerFactory(IPandoraConfigurationMessageProcessor pandoraConfigurationMessageProcessor, IOptionsMonitor<RabbitMqOptions> optionsMonitor, ConsumerPerQueueChannelResolver channelResolver, ILogger<ConsumerFactory> logger)
+    public PandoraRabbitMqConsumerFactory(IPandoraConfigurationMessageProcessor pandoraConfigurationMessageProcessor, IOptionsMonitor<RabbitMqOptions> optionsMonitor, ConsumerPerQueueChannelResolver channelResolver, ILogger<PandoraRabbitMqConsumerFactory> logger)
     {
         _pandoraConfigurationMessageProcessor = pandoraConfigurationMessageProcessor;
         options = optionsMonitor.CurrentValue; //TODO: Implement onChange event

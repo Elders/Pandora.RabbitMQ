@@ -5,11 +5,11 @@ namespace GG.Consumer;
 
 public class Worker : BackgroundService
 {
-    private readonly RabbitMqStartup _rabbitMqStartup;
-    private readonly ConsumerFactory _consumerFactory;
+    private readonly PandoraRabbitMqStartup _rabbitMqStartup;
+    private readonly PandoraRabbitMqConsumerFactory _consumerFactory;
     private readonly ILogger<Worker> _logger;
 
-    public Worker(RabbitMqStartup rabbitMqStartup, ConsumerFactory consumerFactory, ILogger<Worker> logger)
+    public Worker(PandoraRabbitMqStartup rabbitMqStartup, PandoraRabbitMqConsumerFactory consumerFactory, ILogger<Worker> logger)
     {
         _rabbitMqStartup = rabbitMqStartup;
         _consumerFactory = consumerFactory;
@@ -32,5 +32,10 @@ public class Worker : BackgroundService
             }
             await Task.Delay(1000, stoppingToken);
         }
+    }
+
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await _consumerFactory.StopConsumerAsync();
     }
 }

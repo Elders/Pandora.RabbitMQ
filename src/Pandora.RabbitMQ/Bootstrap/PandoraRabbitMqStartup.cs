@@ -6,13 +6,13 @@ using RabbitMQ.Client;
 
 namespace Pandora.RabbitMQ.Bootstrap;
 
-public sealed class RabbitMqStartup
+public sealed class PandoraRabbitMqStartup
 {
     private readonly RabbitMqOptions _options;
     private readonly IRabbitMqConnectionFactory _connectionFactory;
-    private readonly ILogger<RabbitMqStartup> _logger;
+    private readonly ILogger<PandoraRabbitMqStartup> _logger;
 
-    public RabbitMqStartup(IOptionsMonitor<RabbitMqOptions> optionsMonitor, IRabbitMqConnectionFactory connectionFactory, ILogger<RabbitMqStartup> logger)
+    public PandoraRabbitMqStartup(IOptionsMonitor<RabbitMqOptions> optionsMonitor, IRabbitMqConnectionFactory connectionFactory, ILogger<PandoraRabbitMqStartup> logger)
     {
         _options = optionsMonitor.CurrentValue;
         _connectionFactory = connectionFactory;

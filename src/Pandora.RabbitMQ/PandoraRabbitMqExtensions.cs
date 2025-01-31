@@ -12,7 +12,7 @@ public static class PandoraRabbitMqExtensions
     internal static IServiceCollection AddPandoraRabbitMqBase(this IServiceCollection services)
     {
         services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
-        services.AddSingleton<RabbitMqStartup>();
+        services.AddSingleton<PandoraRabbitMqStartup>();
         services.AddSingleton<ConnectionResolver>();
 
         services.AddOptions<RabbitMqOptions>().Configure<IConfiguration>((options, configuration) =>
@@ -38,7 +38,7 @@ public static class PandoraRabbitMqExtensions
         services.AddPandoraRabbitMqBase();
 
         services.AddSingleton<ConsumerPerQueueChannelResolver>();
-        services.AddSingleton<ConsumerFactory>();
+        services.AddSingleton<PandoraRabbitMqConsumerFactory>();
 
         return services;
     }
