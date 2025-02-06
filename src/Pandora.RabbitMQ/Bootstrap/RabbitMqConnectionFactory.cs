@@ -15,9 +15,11 @@ public sealed class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
 
     public IConnection CreateConnectionWithOptions(RabbitMqOptions options)
     {
-        logger.LogDebug("Loaded RabbitMQ options are {@Options}", options);
+        logger.LogDebug("Loaded Pandora.RabbitMQ options are {@Options}", options);
 
-        while (true)
+        bool tailRecursion = false;
+
+        do
         {
             try
             {
@@ -36,13 +38,16 @@ public sealed class RabbitMqConnectionFactory : IRabbitMqConnectionFactory
             catch (Exception ex)
             {
                 if (ex is BrokerUnreachableException)
-                    logger.LogDebug("Failed to create RabbitMQ connection using options {@options}. Retrying...", options);
+                    logger.LogDebug("Failed to create Pandora.RabbitMQ connection using options {@options}. Retrying...", options);
                 else
-                    logger.LogWarning(ex, "Failed to create RabbitMQ connection using options {@options}. Retrying...", options);
+                    logger.LogWarning(ex, "Failed to create Pandora.RabbitMQ connection using options {@options}. Retrying...", options);
 
                 Task.Delay(5000).GetAwaiter().GetResult();
+                tailRecursion = true;
             }
-        }
+        } while (tailRecursion == true);
+
+        return default;
     }
 
     private class MultipleEndpointResolver : DefaultEndpointResolver

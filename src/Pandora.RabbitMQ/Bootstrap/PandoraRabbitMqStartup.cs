@@ -27,13 +27,12 @@ public sealed class PandoraRabbitMqStartup
             CreateVHost(rmqClient, _options);
 
             using var connection = _connectionFactory.CreateConnectionWithOptions(_options);
-            using var channel = connection.CreateModel();
+            using var channel = connection.CreateModel(); 
             RecoverModel(channel, queuePrefix);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to start RabbitMQ infrastructure.");
-            throw;
+            _logger.LogError(ex, "Failed to start Pandora.RabbitMQ infrastructure.");
         }
     }
 

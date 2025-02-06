@@ -25,11 +25,18 @@ public sealed class PandoraRabbitMqConsumerFactory
 
     public void CreateAndStartConsumer(string serviceKey, CancellationToken cancellationToken)
     {
-        string consumerChannelKey = PandoraRabbitMqNamer.GetConsumerChannelName(serviceKey);
-        IModel channel = _channelResolver.Resolve(consumerChannelKey, options, options.VHost);
-        string queueName = PandoraRabbitMqNamer.GetQueueName(serviceKey);
+        try
+        {
+            string consumerChannelKey = PandoraRabbitMqNamer.GetConsumerChannelName(serviceKey);
+            IModel channel = _channelResolver.Resolve(consumerChannelKey, options, options.VHost);
+            string queueName = PandoraRabbitMqNamer.GetQueueName(serviceKey);
 
-        _consumer = new AsyncConsumer(queueName, _pandoraConfigurationMessageProcessor, channel, _logger);
+            _consumer = new AsyncConsumer(queueName, _pandoraConfigurationMessageProcessor, channel, _logger);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to start Pandora.RabbitMQ consumer");
+        }
     }
 
     public async Task StopConsumerAsync()

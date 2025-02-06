@@ -7,7 +7,7 @@ using Pandora.RabbitMQ.Bootstrap.Management.Model;
 
 namespace Pandora.RabbitMQ.Bootstrap.Management
 {
-    public sealed class RabbitMqManagementClient
+    internal sealed class RabbitMqManagementClient
     {
         private static readonly Regex UrlRegex = new Regex(@"^(http|https):\/\/.+\w$");
 
@@ -30,7 +30,7 @@ namespace Pandora.RabbitMQ.Bootstrap.Management
 
         internal RabbitMqManagementClient(RabbitMqOptions settings) : this(settings.ApiAddress ?? settings.Server, settings.Username, settings.Password, useSsl: settings.UseSsl) { }
 
-        public RabbitMqManagementClient(string apiAddresses, string username, string password, bool useSsl = false, TimeSpan? timeout = null, Action<HttpWebRequest> configureRequest = null)
+        internal RabbitMqManagementClient(string apiAddresses, string username, string password, bool useSsl = false, TimeSpan? timeout = null, Action<HttpWebRequest> configureRequest = null)
         {
             portNumber = useSsl ? sslEnabledPort : sslDisabledPort;
             this.useSsl = useSsl;
@@ -78,7 +78,7 @@ namespace Pandora.RabbitMQ.Bootstrap.Management
             }
         }
 
-        public Vhost CreateVirtualHost(string virtualHostName)
+        internal Vhost CreateVirtualHost(string virtualHostName)
         {
             if (string.IsNullOrEmpty(virtualHostName)) throw new ArgumentException("virtualHostName is null or empty");
 
@@ -87,18 +87,18 @@ namespace Pandora.RabbitMQ.Bootstrap.Management
             return GetVhost(virtualHostName);
         }
 
-        public Vhost GetVhost(string vhostName)
+        internal Vhost GetVhost(string vhostName)
         {
             string vhost = SanitiseVhostName(vhostName);
             return Get<Vhost>($"vhosts/{vhost}");
         }
 
-        public IEnumerable<Vhost> GetVHosts()
+        internal IEnumerable<Vhost> GetVHosts()
         {
             return Get<IEnumerable<Vhost>>("vhosts");
         }
 
-        public void CreatePermission(PermissionInfo permissionInfo)
+        internal void CreatePermission(PermissionInfo permissionInfo)
         {
             if (permissionInfo is null) throw new ArgumentNullException("permissionInfo");
 
@@ -107,27 +107,27 @@ namespace Pandora.RabbitMQ.Bootstrap.Management
             Put($"permissions/{vhost}/{username}", permissionInfo);
         }
 
-        public void CreateFederatedExchange(FederatedExchange exchange, string ownerVhost)
+        internal void CreateFederatedExchange(FederatedExchange exchange, string ownerVhost)
         {
             Put($"parameters/federation-upstream/{ownerVhost}/{exchange.Name}", exchange);
         }
 
-        public void CreatePolicy(Policy policy, string ownerVhost)
+        internal void CreatePolicy(Policy policy, string ownerVhost)
         {
             Put($"policies/{ownerVhost}/{policy.Name}", policy);
         }
 
-        public IEnumerable<User> GetUsers()
+        internal IEnumerable<User> GetUsers()
         {
             return Get<IEnumerable<User>>("users");
         }
 
-        public User GetUser(string userName)
+        internal User GetUser(string userName)
         {
             return Get<User>(string.Format("users/{0}", userName));
         }
 
-        public User CreateUser(UserInfo userInfo)
+        internal User CreateUser(UserInfo userInfo)
         {
             if (userInfo is null) throw new ArgumentNullException("userInfo");
 
