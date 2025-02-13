@@ -5,7 +5,7 @@ namespace Pandora.RabbitMQ.Bootstrap;
 
 public sealed class PandoraRabbitMqNamer
 {
-    static Regex regex = new Regex(@"^\b([\w\d_]+$)");
+    static Regex regex = new Regex(@"^\b([\w\d_-]+$)");
     private const string PandoraConfigurationsExchange = "pandora.configurations";
 
     public static string GetQueueName(string queuePrefix)

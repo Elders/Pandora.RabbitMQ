@@ -11,10 +11,15 @@ namespace GG.Consumer
             this.logger = logger;
         }
 
-        public Task ProcessAsync(IConfigurationMessage message)
+        public Task ProcessAsync(ConfigurationRequest message)
         {
             logger.LogInformation("Hello service {service} with tenant {tenant}", message.ServiceKey, message.Tenant);
             return Task.CompletedTask;
+        }
+
+        public Task ProcessAsync(ConfigurationResponse message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

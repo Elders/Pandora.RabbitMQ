@@ -24,8 +24,8 @@ namespace GG.Publisher
 
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
             keyValuePairs.Add("key1", "value1");
-            _publisher.Publish(new ConfigurationMessage("tenant", "giService", keyValuePairs));
-            _publisher.Publish(new ConfigurationMessage("tenant", "topService", keyValuePairs));
+            _publisher.Publish(new ConfigurationRequest("tenant", "giService", keyValuePairs, DateTimeOffset.UtcNow));
+            _publisher.Publish(new ConfigurationRequest("tenant", "topService", keyValuePairs, DateTimeOffset.UtcNow));
 
             while (!stoppingToken.IsCancellationRequested)
             {
