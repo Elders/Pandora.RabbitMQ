@@ -17,7 +17,7 @@ public static class PandoraRabbitMqExtensions
 
         services.AddOptions<RabbitMqOptions>().Configure<IConfiguration>((options, configuration) =>
         {
-            configuration.GetSection("pandora:rabbitmq").Bind(options);
+            configuration.GetRequiredSection("pandora:rabbitmq").Bind(options);
         });
 
         return services;
