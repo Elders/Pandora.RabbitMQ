@@ -110,12 +110,12 @@ public sealed class AsyncConsumer : AsyncEventingBasicConsumer
             if (isRequest)
             {
                 await _pandoraConfigurationMessageProcessor.ProcessAsync(request).ConfigureAwait(false);
-                _logger.LogInformation("Received request message: {message}", request.ServiceKey);
+                _logger.LogDebug("Received request message: {@message}", request);
             }
             else
             {
                 await _pandoraConfigurationMessageProcessor.ProcessAsync(response).ConfigureAwait(false);
-                _logger.LogInformation("Received response message: {message}", request.ServiceKey);
+                _logger.LogDebug("Received response message: {@message}", response);
             }
 
         }
