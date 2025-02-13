@@ -2,6 +2,8 @@
 using Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System;
+using System.Text;
 using System.Text.Json;
 
 namespace Pandora.RabbitMQ.Consumer;
@@ -13,6 +15,8 @@ public sealed class AsyncConsumer : AsyncEventingBasicConsumer
     private readonly IPandoraConfigurationMessageProcessor _pandoraConfigurationMessageProcessor;
     private readonly IModel _model;
     private readonly ILogger _logger;
+
+    private const string MessageType = "pandora-message-type";
 
     public AsyncConsumer(string queuName, IPandoraConfigurationMessageProcessor pandoraConfigurationMessageProcessor, IModel model, ILogger logger) : base(model)
     {
@@ -67,28 +71,60 @@ public sealed class AsyncConsumer : AsyncEventingBasicConsumer
 
     private async Task ProcessAsync(BasicDeliverEventArgs ev, AsyncEventingBasicConsumer consumer)
     {
-        ConfigurationMessage message;
+        bool isRequest = false;
+
+        if (ev.BasicProperties.IsHeadersPresent() && ev.BasicProperties.Headers.TryGetValue(MessageType, out object messageType))
+        {
+            isRequest = IsRequestMessage(messageType);
+        }
+        else
+        {
+            _logger.LogError("Miising MessageType {MessageType}, can't desialize message {message}", MessageType, Convert.ToBase64String(ev.Body.ToArray()));
+            Ack(ev, consumer);
+            return;
+        }
+
+        ConfigurationRequest request = default; // this is not ideal
+        ConfigurationResponse response = default; // this is not ideal
         try
         {
-            message = JsonSerializer.Deserialize<ConfigurationMessage>(ev.Body.ToArray());
+            if (isRequest)
+            {
+                request = JsonSerializer.Deserialize<ConfigurationRequest>(ev.Body.ToArray());
+            }
+            else
+            {
+                response = JsonSerializer.Deserialize<ConfigurationResponse>(ev.Body.ToArray());
+            }
         }
         catch (Exception ex)
         {
             // TODO: send to dead letter exchange/queue
-            _logger.LogError(ex, $"Failed to process message. Failed to deserialize: {Convert.ToBase64String(ev.Body.ToArray())}");
+            _logger.LogError(ex, $"Failed to process message. Failed to deserialize : {Convert.ToBase64String(ev.Body.ToArray())}");
             Ack(ev, consumer);
             return;
         }
 
         try
         {
-            await _pandoraConfigurationMessageProcessor.ProcessAsync(message).ConfigureAwait(false);
-            // Do some work with the message
-            _logger.LogInformation("Received message: {message}", message.ServiceKey);
+            if (isRequest)
+            {
+                await _pandoraConfigurationMessageProcessor.ProcessAsync(request).ConfigureAwait(false);
+                _logger.LogInformation("Received request message: {message}", request.ServiceKey);
+            }
+            else
+            {
+                await _pandoraConfigurationMessageProcessor.ProcessAsync(response).ConfigureAwait(false);
+                _logger.LogInformation("Received response message: {message}", request.ServiceKey);
+            }
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to process message. {message}", JsonSerializer.Serialize(message));
+            if (isRequest)
+                _logger.LogError(ex, "Failed to process request message. {message}", JsonSerializer.Serialize(request));
+            else
+                _logger.LogError(ex, "Failed to process response message. {message}", JsonSerializer.Serialize(response));
         }
         finally
         {
@@ -103,5 +139,15 @@ public sealed class AsyncConsumer : AsyncEventingBasicConsumer
                 consumer.Model.BasicAck(ev.DeliveryTag, false);
             }
         }
+    }
+
+    private static bool IsRequestMessage(object messageHeader)
+    {
+        if (messageHeader is byte[] byteArray)
+        {
+            ReadOnlySpan<byte> byteArrAsSpan = byteArray.AsSpan();
+            return byteArrAsSpan.IndexOf(Encoding.UTF8.GetBytes(ConfigurationRequest.ContractId).AsSpan()) > -1;
+        }
+        return false;
     }
 }
