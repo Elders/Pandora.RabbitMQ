@@ -9,11 +9,11 @@ namespace Pandora.RabbitMQ.Publisher;
 
 public sealed class PandoraRabbitMqPublisher
 {
-    private readonly RabbitMqOptions options;
+    private readonly RabbitMqClusterOptions options;
     private readonly PublisherChannelResolver _channelResolver;
     private readonly ILogger<PandoraRabbitMqPublisher> _logger;
 
-    public PandoraRabbitMqPublisher(IOptionsMonitor<RabbitMqOptions> optionsMonitor, PublisherChannelResolver channelResolver, ILogger<PandoraRabbitMqPublisher> logger)
+    public PandoraRabbitMqPublisher(IOptionsMonitor<RabbitMqClusterOptions> optionsMonitor, PublisherChannelResolver channelResolver, ILogger<PandoraRabbitMqPublisher> logger)
     {
         options = optionsMonitor.CurrentValue; // TODO: Implement onChange event
         _channelResolver = channelResolver;
@@ -26,19 +26,22 @@ public sealed class PandoraRabbitMqPublisher
 
         try
         {
-            string routingKey = PandoraRabbitMqNamer.GetRoutingKey(message.ServiceKey);
+            foreach (var option in options.Clusters)
+            {
+                string routingKey = PandoraRabbitMqNamer.GetRoutingKey(message.ServiceKey);
 
-            IModel exchangeModel = _channelResolver.Resolve(exchangeName, options, message.ServiceKey);
-            IBasicProperties props = exchangeModel.CreateBasicProperties();
-            props.Persistent = true;
-            props.Headers = new Dictionary<string, object>();
-            props.Headers.Add("pandora-message-type", ConfigurationRequest.ContractId);
+                IModel exchangeModel = _channelResolver.Resolve(exchangeName, option, message.ServiceKey);
+                IBasicProperties props = exchangeModel.CreateBasicProperties();
+                props.Persistent = true;
+                props.Headers = new Dictionary<string, object>();
+                props.Headers.Add("pandora-message-type", ConfigurationRequest.ContractId);
 
-            byte[] body = JsonSerializer.SerializeToUtf8Bytes(message);
+                byte[] body = JsonSerializer.SerializeToUtf8Bytes(message);
 
-            exchangeModel.BasicPublish(exchangeName, routingKey, false, props, body);
+                exchangeModel.BasicPublish(exchangeName, routingKey, false, props, body);
 
-            _logger.LogInformation("Published message: {message}", message);
+                _logger.LogInformation("Published message: {message}", message);
+            }
         }
         catch (Exception ex)
         {
@@ -57,19 +60,22 @@ public sealed class PandoraRabbitMqPublisher
 
         try
         {
-            string routingKey = PandoraRabbitMqNamer.GetRoutingKey(serviceKey);
+            foreach (var option in options.Clusters)
+            {
+                string routingKey = PandoraRabbitMqNamer.GetRoutingKey(serviceKey);
 
-            IModel exchangeModel = _channelResolver.Resolve(exchangeName, options, serviceKey);
-            IBasicProperties props = exchangeModel.CreateBasicProperties();
-            props.Persistent = true;
-            props.Headers = new Dictionary<string, object>();
-            props.Headers.Add("pandora-message-type", ConfigurationResponse.ContractId);
+                IModel exchangeModel = _channelResolver.Resolve(exchangeName, option, serviceKey);
+                IBasicProperties props = exchangeModel.CreateBasicProperties();
+                props.Persistent = true;
+                props.Headers = new Dictionary<string, object>();
+                props.Headers.Add("pandora-message-type", ConfigurationResponse.ContractId);
 
-            byte[] body = JsonSerializer.SerializeToUtf8Bytes(message);
+                byte[] body = JsonSerializer.SerializeToUtf8Bytes(message);
 
-            exchangeModel.BasicPublish(exchangeName, routingKey, false, props, body);
+                exchangeModel.BasicPublish(exchangeName, routingKey, false, props, body);
 
-            _logger.LogInformation("Published response message: {@message}", message);
+                _logger.LogInformation("Published response message: {@message}", message);
+            }
         }
         catch (Exception ex)
         {
