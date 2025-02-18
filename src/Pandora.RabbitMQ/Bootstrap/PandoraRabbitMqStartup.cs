@@ -8,11 +8,11 @@ namespace Pandora.RabbitMQ.Bootstrap;
 
 public sealed class PandoraRabbitMqStartup
 {
-    private readonly RabbitMqOptions _options;
+    private readonly RabbitMqClusterOptions _options;
     private readonly IRabbitMqConnectionFactory _connectionFactory;
     private readonly ILogger<PandoraRabbitMqStartup> _logger;
 
-    public PandoraRabbitMqStartup(IOptionsMonitor<RabbitMqOptions> optionsMonitor, IRabbitMqConnectionFactory connectionFactory, ILogger<PandoraRabbitMqStartup> logger)
+    public PandoraRabbitMqStartup(IOptionsMonitor<RabbitMqClusterOptions> optionsMonitor, IRabbitMqConnectionFactory connectionFactory, ILogger<PandoraRabbitMqStartup> logger)
     {
         _options = optionsMonitor.CurrentValue;
         _connectionFactory = connectionFactory;
@@ -23,12 +23,16 @@ public sealed class PandoraRabbitMqStartup
     {
         try
         {
-            RabbitMqManagementClient rmqClient = new RabbitMqManagementClient(_options);
-            CreateVHost(rmqClient, _options);
+            foreach (RabbitMqOptions clusterOption in _options.Clusters)
+            {
+                RabbitMqManagementClient rmqClient = new RabbitMqManagementClient(clusterOption);
+                CreateVHost(rmqClient, clusterOption);
 
-            using var connection = _connectionFactory.CreateConnectionWithOptions(_options);
-            using var channel = connection.CreateModel(); 
-            RecoverModel(channel, queuePrefix);
+                using var connection = _connectionFactory.CreateConnectionWithOptions(clusterOption);
+                using var channel = connection.CreateModel();
+                RecoverModel(channel, queuePrefix);
+            }
+
         }
         catch (Exception ex)
         {

@@ -1,5 +1,10 @@
 ﻿namespace Pandora.RabbitMQ.Bootstrap;
 
+public sealed class RabbitMqClusterOptions
+{
+    public List<RabbitMqOptions> Clusters { get; set; } = new List<RabbitMqOptions>();
+}
+
 public sealed class RabbitMqOptions
 {
     const string ServerDefault = "127.0.0.1";

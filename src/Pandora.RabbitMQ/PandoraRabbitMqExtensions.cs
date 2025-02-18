@@ -14,12 +14,7 @@ public static class PandoraRabbitMqExtensions
         services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
         services.AddSingleton<PandoraRabbitMqStartup>();
         services.AddSingleton<ConnectionResolver>();
-
-        services.AddOptions<RabbitMqOptions>().Configure<IConfiguration>((options, configuration) =>
-        {
-            configuration.GetRequiredSection("pandora:rabbitmq").Bind(options);
-        });
-
+      
         return services;
     }
 
@@ -27,8 +22,13 @@ public static class PandoraRabbitMqExtensions
     {
         services.AddPandoraRabbitMqBase();
 
+        services.AddOptions<RabbitMqClusterOptions>().Configure<IConfiguration>((options, configuration) =>
+        {
+            configuration.GetRequiredSection("pandora:rabbitmq:publisher").Bind(options.Clusters);
+        });
+
         services.AddSingleton<PublisherChannelResolver>();
-        services.AddSingleton<RabbitMqPublisher>();
+        services.AddSingleton<PandoraRabbitMqPublisher>();
 
         return services;
     }
@@ -36,6 +36,11 @@ public static class PandoraRabbitMqExtensions
     public static IServiceCollection AddPandoraRabbitMqConsumer(this IServiceCollection services)
     {
         services.AddPandoraRabbitMqBase();
+
+        services.AddOptions<RabbitMqOptions>().Configure<IConfiguration>((options, configuration) =>
+        {
+            configuration.GetRequiredSection("pandora:rabbitmq:consumer").Bind(options);
+        });
 
         services.AddSingleton<ConsumerPerQueueChannelResolver>();
         services.AddSingleton<PandoraRabbitMqConsumerFactory>();

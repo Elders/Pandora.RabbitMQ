@@ -6,11 +6,11 @@ namespace GG.Publisher
 {
     public class Worker : BackgroundService
     {
-        private readonly RabbitMqPublisher _publisher;
+        private readonly PandoraRabbitMqPublisher _publisher;
         private readonly PandoraRabbitMqStartup _rabbitMqStartup;
         private readonly ILogger<Worker> _logger;
 
-        public Worker(RabbitMqPublisher publisher, PandoraRabbitMqStartup rabbitMqStartup, ILogger<Worker> logger)
+        public Worker(PandoraRabbitMqPublisher publisher, PandoraRabbitMqStartup rabbitMqStartup, ILogger<Worker> logger)
         {
             _publisher = publisher;
             _rabbitMqStartup = rabbitMqStartup;

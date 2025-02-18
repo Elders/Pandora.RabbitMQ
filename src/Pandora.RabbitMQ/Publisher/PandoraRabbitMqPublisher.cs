@@ -7,13 +7,13 @@ using System.Text.Json;
 
 namespace Pandora.RabbitMQ.Publisher;
 
-public sealed class RabbitMqPublisher
+public sealed class PandoraRabbitMqPublisher
 {
     private readonly RabbitMqOptions options;
     private readonly PublisherChannelResolver _channelResolver;
-    private readonly ILogger<RabbitMqPublisher> _logger;
+    private readonly ILogger<PandoraRabbitMqPublisher> _logger;
 
-    public RabbitMqPublisher(IOptionsMonitor<RabbitMqOptions> optionsMonitor, PublisherChannelResolver channelResolver, ILogger<RabbitMqPublisher> logger)
+    public PandoraRabbitMqPublisher(IOptionsMonitor<RabbitMqOptions> optionsMonitor, PublisherChannelResolver channelResolver, ILogger<PandoraRabbitMqPublisher> logger)
     {
         options = optionsMonitor.CurrentValue; // TODO: Implement onChange event
         _channelResolver = channelResolver;
