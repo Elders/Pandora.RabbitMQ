@@ -2,12 +2,10 @@
 
 namespace Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 
-[DataContract(Name = "5691b049-add8-4fee-82b5-d4df05097122")]
+[DataContract(Name = ContractId)]
 public sealed class RemoveConfigurationRequest
 {
     internal const string ContractId = "5691b049-add8-4fee-82b5-d4df05097122";
-
-
 
     public RemoveConfigurationRequest(string tenant, string serviceKey, Dictionary<string, string> data, bool shouldWipeData, DateTimeOffset timestamp)
     {

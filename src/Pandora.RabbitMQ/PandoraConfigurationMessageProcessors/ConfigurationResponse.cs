@@ -2,7 +2,7 @@
 
 namespace Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 
-[DataContract(Name = "27a7bdea-6077-4201-a410-4e57c4e9fb65")]
+[DataContract(Name = ContractId)]
 public sealed class ConfigurationResponse
 {
     internal const string ContractId = "27a7bdea-6077-4201-a410-4e57c4e9fb65";

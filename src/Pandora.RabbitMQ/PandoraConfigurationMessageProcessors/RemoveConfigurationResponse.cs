@@ -2,7 +2,7 @@
 
 namespace Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 
-[DataContract(Name = "b810388b-d723-4c93-8a03-ee00af788ba2")]
+[DataContract(Name = ContractId)]
 public sealed class RemoveConfigurationResponse
 {
     internal const string ContractId = "b810388b-d723-4c93-8a03-ee00af788ba2";
