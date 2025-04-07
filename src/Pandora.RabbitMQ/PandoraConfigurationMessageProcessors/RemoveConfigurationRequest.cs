@@ -3,15 +3,16 @@
 namespace Pandora.RabbitMQ.PandoraConfigurationMessageProcessors;
 
 [DataContract(Name = ContractId)]
-public sealed class ConfigurationRequest
+public sealed class RemoveConfigurationRequest
 {
-    internal const string ContractId = "dd1fe10d-694d-4bff-ba95-c86b74b32ed9";
+    internal const string ContractId = "5691b049-add8-4fee-82b5-d4df05097122";
 
-    public ConfigurationRequest(string tenant, string serviceKey, Dictionary<string, string> data, DateTimeOffset timestamp)
+    public RemoveConfigurationRequest(string tenant, string serviceKey, Dictionary<string, string> data, bool shouldWipeData, DateTimeOffset timestamp)
     {
         Tenant = tenant;
         ServiceKey = serviceKey;
         Data = data ?? new Dictionary<string, string>();
+        ShouldWipeData = shouldWipeData;
         Timestamp = timestamp;
     }
 
@@ -20,6 +21,8 @@ public sealed class ConfigurationRequest
     public string ServiceKey { get; private set; }
 
     public Dictionary<string, string> Data { get; private set; }
+
+    public bool ShouldWipeData { get; private set; }
 
     public DateTimeOffset Timestamp { get; private set; }
 }
