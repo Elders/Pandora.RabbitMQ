@@ -102,7 +102,7 @@ public sealed class AsyncConsumer : AsyncEventingBasicConsumer
         }
         else
         {
-            _logger.LogError("Mising MessageType {MessageType}, can't desialize message {message}", MessageType, Convert.ToBase64String(ev.Body.ToArray()));
+            _logger.LogError("Missing MessageType {MessageType}, can't deserialize message {message}", MessageType, Convert.ToBase64String(ev.Body.ToArray()));
         }
 
         Ack(ev, consumer);
